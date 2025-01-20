@@ -1,3 +1,4 @@
+```mermaid
 graph TB
     subgraph Frontend
         UI[Next.js Frontend]
@@ -41,3 +42,4 @@ graph TB
     P --> Vote
     P --> DAO
     G --> P
+``` 
