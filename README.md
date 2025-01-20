@@ -1,6 +1,6 @@
 # current development status
 - [x] project dependency management 
-- [ ] architecture design
+- [x] architecture design
 - [ ] contracts development
 - [ ] contracts testing
 - [ ] contracts deployment
