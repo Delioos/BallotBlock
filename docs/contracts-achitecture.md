@@ -1,47 +1,42 @@
 ```mermaid
 classDiagram
-    DAOFactory <|-- DAO
-    DAO <|-- Proposal
-    DAO <|-- Membership
+    DAOFactory --> DAO
+    DAO --> DAOMembership
+    DAO --> ProposalManager
 
     class DAOFactory {
-        +address[] daos
+        +mapping(address => bool) daos
         +createDAO(string name, address owner) address
-        +listDAOs() address[]
-        +getDAO(address daoAddress) DAO
+        +isDAO(address daoAddress) bool
     }
     
     class DAO {
         +string name
         +address owner
-        +Proposal[] proposals
-        +Membership membershipType
-        +createProposal(string title, string description, bool onChainVoting) uint256
+        +DAOMembership membership
+        +ProposalManager proposals
+        +initialize(string name, address owner)
+        +createProposal(string title, string description) uint256
+        +mintMembership(address to) uint256
+    }
+    
+    class ProposalManager {
+        +mapping(uint256 => Proposal) proposals
+        +uint256 proposalCounter
+        +struct Proposal
+        +createProposal(string title, string description) uint256
         +vote(uint256 proposalId, bool support)
-        +distributeTokens(address[] recipients, uint256[] amounts)
-        +mintNFT(address recipient)
+        +execute(uint256 proposalId)
+        +getProposal(uint256 proposalId) Proposal
     }
     
-    class Proposal {
-        +uint256 id
-        +string title
-        +string description
-        +bool onChainVoting
-        +uint256 startTime
-        +uint256 endTime
-        +mapping votes
-        +startVote()
-        +endVote()
-        +collectSignatures(bytes[] signatures)
-        +getResults() uint256
-    }
-    
-    class Membership {
-        +bool isNFTBased
-        +address tokenAddress
+    class DAOMembership {
+        +string name
+        +string symbol
+        +address dao
+        +uint256 royaltyBasisPoints
         +mint(address to) uint256
-        +burn(uint256 tokenId)
-        +balanceOf(address owner) uint256
-        +transfer(address to, uint256 amount)
+        +setRoyalty(uint96 royaltyBasisPoints)
+        +supportsInterface(bytes4)
     }
 ```
