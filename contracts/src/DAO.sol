@@ -1,29 +1,57 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+// @author: @deliossssss
 
+pragma solidity ^0.8.20;
 
-contract DAO {
+import "./DAOMembership.sol";
+import "./ProposalManager.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract DAO is Ownable {
     string public name;
-    address public owner;
-    Proposal[] public proposals;
-    Membership public membershipType;
+    DAOMembership public membership;
+    ProposalManager public proposalManager;
+    
+    event ProposalCreated(uint256 indexed proposalId, string title);
+    event MembershipMinted(address indexed to, uint256 indexed tokenId);
 
-    constructor(string memory _name, address _owner, Membership _membershipType) {
+    constructor(
+        string memory _name,
+        address _owner,
+        string memory membershipName,
+        string memory membershipSymbol,
+        uint96 initialRoyaltyBasisPoints
+    ) Ownable(_owner) {
         name = _name;
-        owner = _owner;
-        membershipType = _membershipType;
+        
+        // Deploy membership NFT contract
+        membership = new DAOMembership(
+            membershipName,
+            membershipSymbol,
+            address(this),
+            initialRoyaltyBasisPoints
+        );
+        
+        // Deploy proposal manager
+        proposalManager = new ProposalManager(address(this));
     }
 
-    function createProposal(string memory _title, string memory _description, bool _onChainVoting) public returns (uint256) {
+    function createProposal(
+        string calldata title,
+        string calldata description
+    ) external onlyOwner returns (uint256) {
+        uint256 proposalId = proposalManager.createProposal(title, description);
+        emit ProposalCreated(proposalId, title);
+        return proposalId;
     }
 
-    function vote(uint256 proposalId, bool support) public {
+    function mintMembership(address to) external onlyOwner returns (uint256) {
+        uint256 tokenId = membership.mint(to);
+        emit MembershipMinted(to, tokenId);
+        return tokenId;
     }
 
-
-    function distributeTokens(address[] memory recipients, uint256[] memory amounts) public {   
-    }
-
-    function mintNFT(address recipient) public {
+    function setMembershipRoyalty(uint96 royaltyBasisPoints) external onlyOwner {
+        membership.setRoyalty(royaltyBasisPoints);
     }
 }
