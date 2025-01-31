@@ -14,6 +14,9 @@ contract DAOMembership is ERC721, ERC721Royalty {
     // Token ID counter
     uint256 private _nextTokenId;
 
+    // Add collection-wide royalty tracking
+    uint96 public currentRoyaltyBasisPoints;
+
     constructor(
         string memory name_,
         string memory symbol_,
@@ -21,6 +24,7 @@ contract DAOMembership is ERC721, ERC721Royalty {
         uint96 initialRoyaltyBasisPoints
     ) ERC721(name_, symbol_) {
         dao = daoAddress;
+        currentRoyaltyBasisPoints = initialRoyaltyBasisPoints;
         _setDefaultRoyalty(daoAddress, initialRoyaltyBasisPoints);
     }
 
@@ -35,6 +39,7 @@ contract DAOMembership is ERC721, ERC721Royalty {
     // Only DAO can set royalties
     function setRoyalty(uint96 royaltyBasisPoints) external {
         require(msg.sender == dao, "Only DAO can set royalty");
+        currentRoyaltyBasisPoints = royaltyBasisPoints;
         _setDefaultRoyalty(dao, royaltyBasisPoints);
     }
 

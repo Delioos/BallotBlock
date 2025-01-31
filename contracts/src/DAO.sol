@@ -15,6 +15,10 @@ contract DAO is Ownable {
     event ProposalCreated(uint256 indexed proposalId, string title);
     event MembershipMinted(address indexed to, uint256 indexed tokenId);
 
+    // membership tracking
+    mapping(uint256 => address) public membershipOwners;
+    uint256 public totalMemberships;
+
     constructor(
         string memory _name,
         address _owner,
@@ -47,6 +51,8 @@ contract DAO is Ownable {
 
     function mintMembership(address to) external onlyOwner returns (uint256) {
         uint256 tokenId = membership.mint(to);
+        membershipOwners[tokenId] = to;
+        totalMemberships++;
         emit MembershipMinted(to, tokenId);
         return tokenId;
     }
