@@ -1,15 +1,39 @@
+# DAO System
+
+A complete, decentralized autonomous organization system implementation with membership NFTs, proposal management, and treasury control. 
+
+// add link to live demo here
+
+> **⚠️ IMPORTANT SECURITY DISCLAIMER**
+>
+> This project is an educational exercise and practice implementation. While it follows common security patterns and best practices:
+>
+> - It has NOT been audited or formally verified
+> - It should NOT be used in production environments
+> - It may contain bugs or security vulnerabilities
+> - No warranties or guarantees are provided (see LICENSE)
+>
+> For production DAOs, please consider using established and audited solutions like:
+> - OpenZeppelin Governor contracts
+> - Compound Governor
+> - Other battle-tested governance frameworks
+>
+> The author(s) assume no liability for any damages or losses resulting from the use of this code.
+
+## Overview
+
 # current development status
 - [x] project dependency management 
 - [x] architecture design
-- [ ] contracts development
-- [ ] contracts testing
-- [ ] contracts deployment
-- [ ] backend(s) development
-- [ ] frontend development
-- [ ] dockerization
-- [ ] CI/CD pipeline
-- [ ] monitoring and observability
-- [ ] documentation
+- [ ] contracts development
+- [ ] contracts testing
+- [ ] contracts deployment
+- [ ] backend(s) development
+- [ ] frontend development
+- [ ] dockerization
+- [ ] CI/CD pipeline
+- [ ] monitoring and observability
+- [ ] documentation
 
 
 # What is BallotBlock?

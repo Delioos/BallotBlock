@@ -41,7 +41,22 @@ abstract contract ExecutionStrategy is ReentrancyGuard {
         address[] memory targets,
         uint256[] memory values,
         bytes[] memory calldatas
-    ) external virtual returns (bool);
+    ) external virtual returns (bool) {
+        // Basic validation
+        if (targets.length == 0) revert InvalidProposal();
+        if (targets.length != values.length || targets.length != calldatas.length) revert InvalidProposal();
+
+        bytes32 proposalHash = _hashProposal(targets, values, calldatas);
+        
+        // Validate each target and value
+        for (uint256 i = 0; i < targets.length; i++) {
+            if (targets[i] == address(0)) revert InvalidProposal();
+            // Add any additional validation logic here
+        }
+
+        emit ProposalValidated(proposalHash, true);
+        return true;
+    }
 
     /**
      * @dev Executes a proposal
@@ -53,7 +68,17 @@ abstract contract ExecutionStrategy is ReentrancyGuard {
         address[] memory targets,
         uint256[] memory values,
         bytes[] memory calldatas
-    ) external virtual onlyDAO nonReentrant;
+    ) external virtual onlyDAO nonReentrant {
+        bytes32 proposalHash = _hashProposal(targets, values, calldatas);
+
+        // Execute each call
+        for (uint256 i = 0; i < targets.length; i++) {
+            (bool success, ) = targets[i].call{value: values[i]}(calldatas[i]);
+            if (!success) revert ExecutionFailed();
+        }
+
+        emit ProposalExecuted(proposalHash);
+    }
 
     /**
      * @dev Cancels a proposal
@@ -65,7 +90,10 @@ abstract contract ExecutionStrategy is ReentrancyGuard {
         address[] memory targets,
         uint256[] memory values,
         bytes[] memory calldatas
-    ) external virtual onlyDAO;
+    ) external virtual onlyDAO {
+        bytes32 proposalHash = _hashProposal(targets, values, calldatas);
+        emit ProposalCanceled(proposalHash);
+    }
 
     /**
      * @dev Internal helper to compute proposal hash

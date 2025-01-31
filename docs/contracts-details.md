@@ -4,6 +4,14 @@
 
 This DAO system implements a flexible and secure decentralized autonomous organization with membership NFTs, proposal management, treasury control, and execution strategies. The system is built with security-first principles and includes multiple safety mechanisms.
 
+> **⚠️ IMPORTANT DISCLAIMER**
+>
+> This is a practice project created for learning purposes. While it implements OpenZeppelin's Governor contract patterns, it uses a custom implementation for educational purposes rather than the official OpenZeppelin contracts.
+>
+> This code is provided AS-IS without any warranties or guarantees. It has not been audited and should NOT be used in production. The author assumes no liability for any damages or losses resulting from the use of this code.
+>
+> For production systems, it is strongly recommended to use the official OpenZeppelin Governor contracts which have been thoroughly tested and audited.
+
 ## Core Components
 
 ### 1. DAOFactory
