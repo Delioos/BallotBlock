@@ -6,11 +6,13 @@ pragma solidity ^0.8.20;
 import "./DAOMembership.sol";
 import "./ProposalManager.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Treasury.sol";
 
 contract DAO is Ownable {
     string public name;
     DAOMembership public membership;
     ProposalManager public proposalManager;
+    Treasury public treasury;
     
     event ProposalCreated(uint256 indexed proposalId, string title);
     event MembershipMinted(address indexed to, uint256 indexed tokenId);
@@ -38,6 +40,9 @@ contract DAO is Ownable {
         
         // Deploy proposal manager
         proposalManager = new ProposalManager(address(this));
+        
+        // Deploy treasury
+        treasury = new Treasury(address(this));
     }
 
     function createProposal(
@@ -59,5 +64,17 @@ contract DAO is Ownable {
 
     function setMembershipRoyalty(uint96 royaltyBasisPoints) external onlyOwner {
         membership.setRoyalty(royaltyBasisPoints);
+    }
+
+    function executeProposal(uint256 proposalId) external onlyOwner {
+        proposalManager.execute(proposalId);
+    }
+
+    function withdrawFunds(
+        address token,
+        uint256 amount,
+        address to
+    ) external onlyOwner {
+        treasury.withdraw(token, amount, to);
     }
 }
