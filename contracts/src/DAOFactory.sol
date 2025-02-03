@@ -57,7 +57,9 @@ contract DAOFactory is Ownable, ReentrancyGuard, Pausable {
         string memory name,
         string memory membershipName,
         string memory membershipSymbol,
-        uint96 initialRoyaltyBasisPoints
+        uint96 initialRoyaltyBasisPoints,
+        uint256 votingPeriod,
+        uint256 quorumPercentage
     ) external nonReentrant whenNotPaused returns (address daoAddress) {
         // Input validation
         if (bytes(name).length == 0 ||
@@ -73,7 +75,9 @@ contract DAOFactory is Ownable, ReentrancyGuard, Pausable {
             msg.sender,
             membershipName,
             membershipSymbol,
-            initialRoyaltyBasisPoints
+            initialRoyaltyBasisPoints,
+            votingPeriod,
+            quorumPercentage
         );
         
         daoAddress = address(dao);
