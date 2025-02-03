@@ -182,18 +182,5 @@ contract DAOMembership is ERC721, ERC721Royalty, Pausable, ReentrancyGuard {
         return super.supportsInterface(interfaceId);
     }
 
-    function _update(address to, uint256 tokenId, address auth)
-        internal
-        override(ERC721)
-        returns (address)
-    {
-        return super._update(to, tokenId, auth);
-    }
 
-    function _burn(uint256 tokenId) 
-        internal 
-        override(ERC721)
-    {
-        super._burn(tokenId);
-    }
 }

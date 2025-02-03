@@ -26,7 +26,9 @@ contract DAO is Ownable {
         address _owner,
         string memory membershipName,
         string memory membershipSymbol,
-        uint96 initialRoyaltyBasisPoints
+        uint96 initialRoyaltyBasisPoints,
+        uint256 votingPeriod,
+        uint256 quorumPercentage
     ) Ownable(_owner) {
         name = _name;
         
@@ -38,8 +40,12 @@ contract DAO is Ownable {
             initialRoyaltyBasisPoints
         );
         
-        // Deploy proposal manager
-        proposalManager = new ProposalManager(address(this));
+        // Deploy proposal manager with configurable parameters
+        proposalManager = new ProposalManager(
+            address(this),
+            quorumPercentage,
+            votingPeriod
+        );
         
         // Deploy treasury
         treasury = new Treasury(address(this));
@@ -47,9 +53,18 @@ contract DAO is Ownable {
 
     function createProposal(
         string calldata title,
-        string calldata description
+        string calldata description,
+        address[] calldata targets,
+        uint256[] calldata values,
+        bytes[] calldata calldatas
     ) external onlyOwner returns (uint256) {
-        uint256 proposalId = proposalManager.createProposal(title, description);
+        uint256 proposalId = proposalManager.createProposal(
+            title,
+            description,
+            targets,
+            values,
+            calldatas
+        );
         emit ProposalCreated(proposalId, title);
         return proposalId;
     }

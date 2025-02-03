@@ -80,7 +80,7 @@ contract ProposalManager is ReentrancyGuard, Pausable {
 
     uint256 public constant MAX_TRANSACTION_VALUE = 1000 ether;
     uint256 public constant TIMELOCK_DURATION = 2 days;
-
+    uint256 public constant MAX_TARGETS = 10;
     mapping(bytes32 => uint256) public pendingProposals;
 
     constructor(
