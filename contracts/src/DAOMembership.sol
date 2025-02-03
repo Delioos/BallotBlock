@@ -91,7 +91,7 @@ contract DAOMembership is ERC721, ERC721Royalty, Pausable, ReentrancyGuard {
         nonReentrant 
         whenNotPaused 
     {
-        require(_isApprovedOrOwner(msg.sender, tokenId), "Not authorized to burn");
+        require(_isAuthorized(ownerOf(tokenId), msg.sender, tokenId), "Not authorized to burn");
         
         _burn(tokenId);
         delete votingPower[tokenId];
@@ -126,7 +126,8 @@ contract DAOMembership is ERC721, ERC721Royalty, Pausable, ReentrancyGuard {
         onlyDAO 
         whenNotPaused 
     {
-        if (!_exists(tokenId)) revert InvalidTokenId();
+        // check if token exists
+        if (tokenId >= _nextTokenId) revert InvalidTokenId();
         if (newVotingPower == 0) revert InvalidParameters();
         if (newVotingPower > type(uint96).max) revert InvalidParameters();
         
@@ -153,7 +154,8 @@ contract DAOMembership is ERC721, ERC721Royalty, Pausable, ReentrancyGuard {
      * @return Current voting power
      */
     function getVotingPower(uint256 tokenId) external view returns (uint256) {
-        if (!_exists(tokenId)) revert InvalidTokenId();
+        // check if token exists
+        if (tokenId >= _nextTokenId) revert InvalidTokenId();
         return votingPower[tokenId];
     }
 
