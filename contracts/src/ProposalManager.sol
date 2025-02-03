@@ -54,6 +54,12 @@ contract ProposalManager is ReentrancyGuard, Pausable {
         uint256 startTime,
         uint256 endTime
     );
+    event ProposalQueued(
+        bytes32 indexed proposalHash,
+        address target,
+        uint256 value,
+        uint256 timestamp
+    );
     event ProposalExecuted(uint256 indexed proposalId);
     event ProposalCanceled(uint256 indexed proposalId);
     event VoteCast(
@@ -75,7 +81,7 @@ contract ProposalManager is ReentrancyGuard, Pausable {
     uint256 public constant MAX_TRANSACTION_VALUE = 1000 ether;
     uint256 public constant TIMELOCK_DURATION = 2 days;
 
-    mapping(bytes32 => uint256) public pendingTransactions;
+    mapping(bytes32 => uint256) public pendingProposals;
 
     constructor(
         address _dao,
@@ -258,17 +264,17 @@ contract ProposalManager is ReentrancyGuard, Pausable {
         }
     }
 
-    function queueTransaction(
+    function queueProposal(
         address target,
         uint256 value,
         bytes calldata data
     ) external onlyDAO returns (bytes32) {
         if (value > MAX_TRANSACTION_VALUE) revert ValueTooHigh();
         
-        bytes32 txHash = keccak256(abi.encode(target, value, data));
-        pendingTransactions[txHash] = block.timestamp + TIMELOCK_DURATION;
+        bytes32 proposalHash = keccak256(abi.encode(target, value, data));
+        pendingProposals[proposalHash] = block.timestamp + TIMELOCK_DURATION;
         
-        emit TransactionQueued(txHash, target, value, block.timestamp);
-        return txHash;
+        emit ProposalQueued(proposalHash, target, value, block.timestamp);
+        return proposalHash;
     }
 }

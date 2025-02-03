@@ -192,7 +192,7 @@ contract DAOMembership is ERC721, ERC721Royalty, Pausable, ReentrancyGuard {
 
     function _burn(uint256 tokenId) 
         internal 
-        override(ERC721, ERC721Royalty) 
+        override(ERC721)
     {
         super._burn(tokenId);
     }
